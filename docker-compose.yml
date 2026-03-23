@@ -9,12 +9,30 @@ services:
       xpack.security.authc.api_key.enabled: "true"
       ELASTIC_PASSWORD: '111'
       ES_JAVA_OPTS: '-Xmx2g -Xms2g'
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -u elastic:111 http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  kibana-setup:
+    image: elasticsearch:9.3.0
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    entrypoint: ["bash", "-c", "curl -s -X POST -u elastic:111 -H 'Content-Type: application/json' http://elasticsearch:9200/_security/user/kibana_system/_password -d '{\"password\": \"kibana111\"}' && echo ' kibana_system password set!'"]
+
   kibana:
     image: docker.elastic.co/kibana/kibana:9.3.0
     volumes:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - 5601:5601
+    depends_on:
+      kibana-setup:
+        condition: service_completed_successfully
 
   notebook:
     image: grosinosky/bigdata_fila3_jupyter
@@ -22,13 +40,15 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: jupyter
-    ports: 
-    - "8888:8888"
-    - "4040:4040"    
+    ports:
+      - "8888:8888"
+      - "4040:4040"
     environment:
       JUPYTER_ENABLE_LAB: "yes"
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     command: start-notebook.py --NotebookApp.token=''
 
-
+volumes:
+  esdata:
