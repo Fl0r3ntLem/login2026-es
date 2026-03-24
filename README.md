@@ -1,5 +1,18 @@
 # Elastic search
 
+## General description
+Usual structure of an Elastic Search database:
+![alt text](img/elastic_structure.png)
+
+Among most known and powerful Elastic features, we can name:
+* Full-text search and reverted index
+* Scoring -> Term Frequency and Inverse Document Frequency
+* Query types: term, match, bool, range, fuzzy ...etc
+* Aggregations (analytics)
+* Ingest Pipelines
+* Geo-Search
+* ...
+
 ## Installation
 1. Clone this repository : 
 2. Open a terminal in the folder.
