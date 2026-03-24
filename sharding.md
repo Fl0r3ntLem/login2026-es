@@ -7,6 +7,12 @@ Avantage : permet d'avoir un index volumineux, d'augmenter la taille de l'index 
 
 ## Naviguer dans le cluster ES
 
+Tout d'abord relançons le cluster sur 1 container :
+
+```bash
+docker compose up
+```
+
 Vision globale des nodes et shards :
 ```bash
 curl -u elastic:111 "http://localhost:9200/_cluster/health?pretty"
@@ -32,7 +38,7 @@ curl -su elastic:111 "http://localhost:9200/_cat/shards?v&h=index,shard,prirep,s
 ```
 ## Lancer plusieurs nodes
 
-Un data node contient des shards avec les documents indexés. L'idée est de répartir la charge CPU des algorithmes sur plusieurs data nodes afin de paralélliser et accélérer le processus de recherche. 
+Un data node contient des shards avec les documents indexés. 
 
 Les documents sont stockés sur des data shards, et ils peuvent être redondants. Il y toujours un primary shard et 0 ou plus répliques, ce qui permet de tolérer et réparer les erreurs, mais aussi de répartir en parallèle les opérations d'écriture/lecture sur un même segment de donnée. Si un shard primaire est corrumpu, une réplique est promue en primaire à sa place.
 
@@ -42,7 +48,7 @@ La suite de ce tutoriel consiste à relancer 3 containers qui contiennent chacun
 
 ```bash
 docker compose down
-docker compose -f docker-compose-multi.yml up -d
+docker compose -f docker-compose-multi.yml up -d --build
 ```
 En inspectant les shards, les index doivent bien avoir été répartis sur des nodes différents.
 
@@ -73,3 +79,17 @@ curl -u elastic:111 -X POST "http://localhost:9200/ncedc-earthquakes-earthquake/
   -d '{"settings": {"index.number_of_shards": 3}}'
 ```
 Toujours en inspectant le cluster on peut voir la duplication de la donnée et l'augmentation de la taille effective de l'index
+
+
+## Un intérêt d'efficacité
+
+L'idée est de répartir la charge CPU des algorithmes sur plusieurs data node afin de paralélliser et accélérer le processus de recherche. Ces nodes peuvent être de type plus spécifique en fonction du type et de la fréquence d'accès : data, data_content, data_hot, data_warm, data_cold, data_frozen, ingest
+
+![Data processing flow](img/elasticsearch-data-processing.png)
+
+Un des nodes est le master, et a pour role d'orchestrer les opérations importantes dans l'index : ajout, modification ou suppression dans l'index, répertorier les autres nodes, répartir les shards dans les autres nodes
+Cette répartition dynamique des rôles permet encore plus de scalabilité, de résilience et d'efficacité.
+
+![Master node and roles](img/master-node.png)
+
+Pour plus d'information, la documentation ES est très détaillée et accessible
