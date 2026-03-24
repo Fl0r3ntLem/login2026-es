@@ -68,9 +68,11 @@ It is also possible to check it directly in Kibana at the [index management page
 ## 7. View data in Kibana
 
 - Open [http://localhost:5601](http://localhost:5601).
-- Go to "Discover" ![alt text](img/kibana_menu.png)
-- Go on "Dataview" and click on Create a data view ![alt text](img/create-data-view.png)
-- Put ***\*earthquake*** in the index name field and click on "Save dataview to Kibana" ![alt text](img/create-data-view2.png)
+- Go to "Discover"  
+![alt text](img/kibana_menu.png)
+- Go on "Dataview" and click on Create a data view  
+![alt text](img/create-data-view.png)
+- Put ***\*earthquake*** in the index name field and click on "Save dataview to Kibana" ![alt text](img/create-data-view-2.png)
 - ***Warning***: Data is from 1970 to 2020, so you need to change the time range in the top right corner to "Last 50 years" or "All time" ![alt text](img/time-range.png)
 
 ### Create a dashboard

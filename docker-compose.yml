@@ -50,5 +50,13 @@ services:
         condition: service_healthy
     command: start-notebook.py --NotebookApp.token=''
 
+  ingest-init:
+    build:
+      context: .
+      dockerfile: ingest-init/Dockerfile
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
 volumes:
   esdata:
