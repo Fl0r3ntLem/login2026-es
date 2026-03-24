@@ -57,6 +57,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    volumes:
+      - ./ncedc-earthquakes-dataset/:/source/
 
 volumes:
   esdata:
