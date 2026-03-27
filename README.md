@@ -36,4 +36,5 @@ Kibana is a powerful tool to visualize and analyze data stored in elastic search
 
 ## Assignment
 1. Follow the [Elasticsearch Basics section](Elasticsearch_Basics.ipynb)
-2. Use Kibana to visualize the data (follow [data visualization](data_visualization.md) tutorial)
+2. Follow the [Earthquake Analysis section](Earthquakes_Analysis.ipynb)
+3. Use Kibana to visualize the data (follow [data visualization](data_visualization.md) tutorial)
